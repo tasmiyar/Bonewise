@@ -1,0 +1,225 @@
+@font-face {
+    font-family: 'SF Distant Galaxy';
+    src: local('SF Distant Galaxy'), url(fonts/SF\ Distant\ Galaxy.ttf), format('ttf');
+  }
+  
+  body {
+    background-color: rgb(0, 0, 0);
+    margin: 0;
+    font-family: 'SF Distant Galaxy';
+  }
+  
+  #heading {
+    position: fixed;
+    width: 100%;
+    padding: 32px;
+  }
+  
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0; /* Ensure the canvas is behind other elements */
+  }
+  
+  #heading {
+    position: relative; /* Ensure the title is above the canvas */
+    z-index: 1; /* Higher z-index than the canvas */
+    text-align: center;
+    color: white;
+  }
+  
+  h1 {
+    color: rgb(215, 215, 215);
+    font-size: 4em;
+    margin: 0px;
+    font-weight: 100;
+  }
+  
+  #progress-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  #progress {
+    font-size: 3em;
+    color: white;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0; /* Ensure the canvas is behind other elements */
+  }
+  
+  #heading {
+    position: relative; /* Ensure the title is above the canvas */
+    z-index: 1; /* Higher z-index than the canvas */
+    text-align: center;
+    color: white;
+  }
+  
+  #heading h1 {
+    color: rgb(215, 215, 215);
+    font-size: 4em;
+    margin: 0px;
+    font-weight: 100;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Add drop shadow */
+}
+  
+  body {
+    background-color: rgb(0, 0, 0);
+    margin: 0;
+    font-family: 'SF Distant Galaxy';
+    overflow-y: auto; /* Enable vertical scrolling */
+    height: auto; /* Allow the body height to grow with content */
+  }
+
+  .border {
+    width: 80%; /* Adjust the width of the line */
+    height: 2px; /* Thickness of the line */
+    background-color: white; /* Line color */
+    margin: 0 auto; /* Center the line horizontally */
+    margin-top: 10px; /* Add spacing above the line */
+  }
+
+  /* Style for the mesh name textbox */
+  #mesh-name {
+    position: absolute;
+    top: (-400%); /* Vertically center it relative to the canvas */
+    left: calc(500%); /* Position it next to the 3D model */
+    transform: translateY(500%); /* Center it vertically */
+    z-index: 10;
+    padding: 8px 12px; /* Compact padding */
+    font-size: 14px; /* Smaller font size */
+    font-family: 'Arial', sans-serif; /* Clean, modern font */
+    color: #fff; /* White text */
+    background-color: #000; /* Black background */
+    border: 1.5px solid #ffffff; /* Subtle gray border */
+    border-radius: 3px; /* Rounded corners */
+    box-shadow: 0 12px 12px rgba(0, 0, 0, 0.7); /* Add a soft shadow to the box */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Add drop shadow to the text */
+    opacity: 0; /* Start hidden for fade-in effect */
+    transition: opacity 0.5s ease-in-out; /* Smooth fade-in animation */
+    text-align: center; /* Center the text inside the box */
+    width: 200px; 
+    height: 40px; /* Fixed height for consistency */
+}
+
+
+
+/* Show the textbox when it has content */
+#mesh-name:not([value=""]) {
+    opacity: 1; /* Fade in when the value is set */
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+#mesh-name.fade-in {
+    animation: fadeIn 0.5s ease-in-out; /* Apply the fade-in animation */
+}
+
+/* Slide-up and fade-in animation for the title */
+@keyframes slideUpFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px); /* Start slightly below */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0); /* End at the original position */
+    }
+}
+
+/* Slide-up and fade-in animation for the line */
+@keyframes slideUpLine {
+    from {
+        opacity: 0;
+        transform: translateY(20px); /* Start slightly below */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0); /* End at the original position */
+    }
+}
+
+/* Apply the animation to the title */
+#heading h1 {
+    animation: slideUpFadeIn 2s ease-in-out; /* 1-second animation */
+    opacity: 0; /* Start hidden */
+    animation-fill-mode: forwards; /* Keep the final state after animation ends */
+}
+
+/* Apply the animation to the line */
+#heading .border {
+    animation: slideUpLine 1s ease-in-out 1s; /* 0.8-second animation with a 1-second delay */
+    opacity: 0; /* Start hidden */
+    animation-fill-mode: forwards; /* Keep the final state after animation ends */
+}
+
+#mesh-name {
+    cursor: grab; /* Default cursor for draggable elements */
+}
+
+#navigation {
+    position: absolute;
+    top: -1000px; 
+    left: 50px; /* Move the navigation container to the left */
+    z-index: 100; /* Ensure it appears above the canvas */
+}
+
+#navigation a {
+    color: white; /* Ensure the text is visible */
+    text-decoration: none;
+    font-size: 18px;
+    margin-right: 20px; /* Adjust spacing between buttons */
+    padding: 20px 50px;
+    background-color: #000; /* Add a background for visibility */
+    border: 2px solid #ffffff;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+#navigation a:hover {
+    background-color: #333; /* Add hover effect */
+}
+
+#mesh-name-box {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  text-align: center;
+}
+
+.quiz-title {
+  margin-top: 20px; /* Smaller value moves it closer to the top */
+  text-align: center; /* Optional, if you want it centered */
+}
