@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trunk Quizzes</title>
+  <link rel="stylesheet" href="public/index.css" />
+  <style>
+    #button-container {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      margin-top: 40px;
+    }
+
+    .upper-button {
+      padding: 15px 30px;
+      font-size: 16px;
+      color: white;
+      background-color: #0d1114;
+      border: 1px solid white;
+      border-radius: 5px;
+      text-decoration: none;
+      text-align: center;
+      transition: background-color 0.3s ease, transform 0.7s ease, opacity 0.7s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .upper-button:hover {
+      background-color: #1a1f24;
+    }
+
+    .fade-up {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+
+
+
+/* Flex container for images */
+        #image-container {
+            display: flex;
+            justify-content: center; /* Center the images horizontally */
+            align-items: center; /* Align the images vertically */
+            gap: 230px; /* Add consistent space between the images */
+            margin: 10 auto;
+            scale: 0.7;
+        } 
+    #image-container img:nth-child(4) {
+    margin-left: -60px; /* or use left: 40px with position: relative */
+}
+
+#image-container img:nth-child(3) {
+    margin-left: -90px; /* or use left: 40px with position: relative */
+}
+
+#image-container img:nth-child(2) {
+    margin-left: -90px; /* or use left: 40px with position: relative */
+}
+#image-container img:nth-child(6) {
+    margin-left: -90px; /* or use left: 40px with position: relative */
+}
+#image-container img:nth-child(5) {
+    margin-left: -50px; /* or use left: 40px with position: relative */
+}
+
+
+    .bone-option {
+      position: relative; /* Required for absolute child */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .quiz-options {
+      display: none;
+      position: absolute;
+      top: 100%;
+      margin-top: 10px;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeDown 0.3s ease-out forwards;
+      z-index: 10;
+    }
+
+    @keyframes fadeDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .quiz-button {
+      margin: 5px 0;
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #333;
+      color: white;
+      border: 1px solid white;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    .quiz-button:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div id="heading">
+    <a href="quiz.html" style="text-decoration: none; color: inherit;">
+      <h1>Trunk Quizzes</h1>
+    </a>
+    <div class="border"></div>
+  </div>
+
+  <div id="content">
+    <p>Welcome to the page!</p>
+  </div>
+
+  <div id="image-container">
+    <img id="atlas-image" src="public/previews/atlas vertebrae img.png" alt="Pelvis Image" > 
+            <img id="axis-image" src="public/previews/axis vertebrae img.png" alt="Femur Image">
+            <img id="cervicle-image" src="public/previews/cervicle vertebrae img.png" alt="Tibia Image">
+            <img id="thoracic-image" src="public/previews/thoracic vertebrae img.png" alt="Fibula Image" >
+            <img id="lumbar-image" src="public/previews/lumbar vertebrae img.png" alt="Foot Image">
+            <img id="sacrum-image" src="public/previews/sacrum img.png" alt="Foot Image">
+  </div>
+
+  <div id="button-container">
+    <div class="bone-option" data-bone="Atlas">
+      <button class="upper-button">Atlas</button>
+      <div class="quiz-options">
+        <a href="Trunk quizzes\QWatlas.html" class="quiz-button">Written</a>
+        <a href="Trunk quizzes\QMatlas.html" class="quiz-button">Matching</a>
+      </div>
+    </div>
+
+    <div class="bone-option" data-bone="Axis">
+      <button class="upper-button">Axis</button>
+      <div class="quiz-options">
+        <a href="Trunk quizzes\QWaxis.html" class="quiz-button">Written</a>
+        <a href="Trunk quizzes\QMaxis.html" class="quiz-button">Matching</a>
+      </div>
+    </div>
+
+    <div class="bone-option" data-bone="Radius">
+      <button class="upper-button">Cervical</button>
+      <div class="quiz-options">
+        <a href="Trunk quizzes\QWcervical.html" class="quiz-button">Written</a>
+        <a href="Trunk quizzes\QMcervical.html" class="quiz-button">Matching</a>
+      </div>
+    </div>
+
+    <div class="bone-option" data-bone="Ulna">
+      <button class="upper-button">Thoracic</button>
+      <div class="quiz-options">
+        <a href="Trunk quizzes\QWthoracic.html" class="quiz-button">Written</a>
+        <a href="Trunk quizzes\QWthoracic.html" class="quiz-button">Matching</a>
+      </div>
+    </div>
+
+    <div class="bone-option" data-bone="Hand">
+      <button class="upper-button">Lumbar</button>
+      <div class="quiz-options">
+        <a href="Trunk quizzes\QWlumbar.html" class="quiz-button">Written</a>
+        <a href="Trunk quizzes\QMlumbar.html" class="quiz-button">Matching</a>
+      </div>
+    </div>
+
+    <div class="bone-option" data-bone="Hand">
+        <button class="upper-button">Sacrum</button>
+        <div class="quiz-options">
+          <a href="Trunk quizzes\QWsacrum.html" class="quiz-button">Written</a>
+          <a href="Trunk quizzes\QMsacrum.html" class="quiz-button">Matching</a>
+        </div>
+      </div>
+  </div>
+
+  <script type="module">
+    window.addEventListener('load', () => {
+      const mainButtons = document.querySelectorAll('.upper-button');
+
+      mainButtons.forEach(button => {
+        button.classList.add('fade-up');
+
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          const parent = button.parentElement;
+          const options = parent.querySelector('.quiz-options');
+
+          // Hide others
+          document.querySelectorAll('.quiz-options').forEach(opt => {
+            if (opt !== options) opt.style.display = 'none';
+          });
+
+          // Toggle current
+          if (options.style.display === 'none' || options.style.display === '') {
+            options.style.display = 'flex';
+          } else {
+            options.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
+
+  <script type="module">
+    window.addEventListener('load', () => {
+      const buttons = document.querySelectorAll('.upper-button');
+      buttons.forEach((button, index) => {
+        setTimeout(() => {
+          button.classList.add('fade-up');
+        }, index * 200);
+      });
+    });
+  </script>
+</body>
+</html>

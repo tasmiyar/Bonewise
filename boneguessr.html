@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>BoneGuessr</title>
+        <link rel="stylesheet" href="public/index.css">
+        <style>
+            #xray-container {
+                display: flex;
+                align-items: flex-start;
+                margin-top: 40px;
+                position: relative;
+                width: 700px;
+                height: 900px;
+            }
+            
+            #main-xray {
+                max-width: 600px;
+                max-height: 700px;
+                border-radius: 10px;
+                box-shadow: 0 0 20px #000;
+                margin-left: 180px;
+                position: absolute;
+                left: 0;
+                top: 0;
+                opacity: 1;
+                transition: opacity 0.7s;
+                z-index: 1;
+            }
+            .arrow-btn {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 3em;
+                color: #fff;
+                background: rgba(0,0,0,0.3);
+                border: none;
+                border-radius: 50%;
+                width: 60px;
+                height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 2;
+                user-select: none;
+                transition: background 0.2s;
+            }
+            .arrow-btn:hover {
+                background: rgba(0,0,0,0.6);
+            }
+            #arrow-left { left: 100px; }
+            #arrow-right { right: 0; }
+            /* Osteoporosis info container styles */
+            #osteoarthritis-info-container {
+                position: absolute;
+                left: 180px;
+                top: 720px;
+                width: 600px;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                z-index: 2;
+            }
+            .osteo-btn {
+                background: #222;
+                color: #fff;
+                padding: 16px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background 0.2s;
+                font-size: 1.1em;
+                border: none;
+                text-align: left;
+            }
+            .osteo-btn:hover {
+                background: #444;
+            }
+            .osteo-detail {
+                background: #333;
+                color: #fff;
+                padding: 16px;
+                border-radius: 8px;
+                margin-top: 8px;
+                margin-bottom: 0px;
+                transition: opacity 0.4s;
+                opacity: 0;
+                display: flex;
+                align-items: center;
+            }
+        </style>
+        <!-- Place this just before </body> -->
+<div id="info-scroll-box">
+  <div class="info-section">
+    <div class="info-title">Definition</div>
+    <div class="info-space">
+      Osteoarthritis is a degenerative joint disease where the cartilage that cushions the ends of bones in joints wears away over time.
+    </div>
+    <div class="info-space"></div>
+    <div class="info-title">Causes</div>
+    <ul class="info-list">
+      <li>Aging</li>
+      <li>Joint overuse or repetitive stress</li>
+      <li>Obesity</li>
+      <li>Previous joint injuries</li>
+      <li>Genetics or family history</li>
+      <li>Weak muscles supporting the joint</li>
+      <li>Poor joint alignment (e.g., bow legs)</li>
+      <li>Congenital joint abnormalities</li>
+      <li>Inflammatory joint diseases (e.g., rheumatoid arthritis)</li>
+      <li>Metabolic disorders (e.g., hemochromatosis)</li>
+      <li>Bone deformities</li>
+      <li>Gender (more common in women)</li>
+      <li>Occupations requiring heavy physical labor</li>
+      <li>Sports or activities with high joint impact</li>
+    </ul>
+    <div class="info-title">Symptoms</div>
+    <ul class="info-list">
+      <li>Joint pain (especially during or after movement)</li>
+      <li>Stiffness (particularly in the morning or after inactivity)</li>
+      <li>Decreased range of motion</li>
+      <li>Swelling around the joint</li>
+      <li>Joint tenderness</li>
+      <li>Grating or cracking sensation (crepitus) during movement</li>
+      <li>Bone spurs (osteophytes) felt as hard lumps</li>
+      <li>Joint instability or buckling</li>
+      <li>Muscle weakness around the joint</li>
+      <li>Joint deformity in advanced stages</li>
+      <li>Fatigue due to chronic pain</li>
+      <li>Difficulty performing daily activities</li>
+    </ul>
+    <div class="info-title">Treatment</div>
+<ul class="info-list">
+  <li>
+    <strong>Cortisone Injections:</strong>
+    <br>
+    Corticosteroids can be injected directly into the joint to reduce inflammation and relieve pain for several weeks. However, due to the risk of worsening joint damage, these injections are typically limited to three or four times per year.
+  </li>
+  <li>
+    <strong>Lubrication Injections (Hyaluronic Acid):</strong>
+    <br>
+    These injections aim to mimic natural joint fluid and may offer cushioning to relieve knee pain. Research results are mixed, with some studies showing little to no benefit beyond a placebo effect.
+  </li>
+  <li>
+    <strong>Realigning Bones (Osteotomy):</strong>
+    <br>
+    Osteotomy surgery involves reshaping the bone to shift weight away from the damaged area of the knee. It can relieve pressure and improve function, especially when arthritis affects only one side of the knee.
+  </li>
+  <li>
+    <strong>Joint Replacement Surgery:</strong>
+    <br>
+    This procedure replaces worn-out joint surfaces with artificial components made of metal and plastic. While it can significantly improve mobility and pain, it carries surgical risks and the artificial joint may eventually need to be replaced.
+  </li>
+</ul>
+  </div>
+</div>
+<style>
+  #info-scroll-box {
+    position: absolute;
+    right: 100px;
+    top: 215px;
+    width: 440px;
+    height: 650px;
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 0 0 0 0;
+    background: #232323;
+  }
+  .info-section {
+    padding: 24px 24px 24px 24px;
+    display: flex;
+    flex-direction: column;
+  }
+  .info-title {
+    font-size: 1.15em;
+    font-weight: bold;
+    margin-bottom: 6px;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #888; /* Add underline */
+    padding-bottom: 4px;           /* Space between text and underline */
+  }
+  .info-space {
+    height: 32px;
+  }
+  .info-list {
+    margin: 0 0 16px 18px;
+    padding-left: 18px;
+    font-size: 1em;
+    line-height: 1.6;
+  }
+  .info-list li {
+    margin-bottom: 4px;
+  }
+</style>
+    </head>
+    <body>
+    <div id="heading">
+      <a href="index.html" style="text-decoration: none; color: inherit;">
+        <h1>BoneGuessr</h1>
+      </a>
+      <!-- Remove the border line if present -->
+      <!-- Add the Start Guessing button 80px below the title -->
+      <button id="start-guessing-btn" style="
+        display: block;
+        margin: 30px auto 0 auto;
+        font-size: 1.4em;
+        background: none;
+        color: #fff;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        font-family: 'Times New Roman', Times, serif;
+        font-weight: normal;
+        text-decoration: underline;
+        text-underline-offset: 6px;
+      ">
+        Start Guessing!
+      </button>
+    </div>
+    <script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('start-guessing-btn');
+    btn.style.opacity = "0";
+    btn.style.transform = "translateY(40px)";
+    setTimeout(() => {
+      btn.style.transition = "opacity 2s cubic-bezier(.4,0,.2,1), transform 2s cubic-bezier(.4,0,.2,1)";
+      btn.style.opacity = "1";
+      btn.style.transform = "translateY(0)";
+    }, 400); // delay to match the title animation if any
+  });
+</script>
+    <div id="progress-container">
+    </div>
+    <!-- ...inside <body>... -->
+<div id="xray-container">
+  <button id="arrow-left" class="arrow-btn">&#8592;</button>
+  <img 
+    id="main-xray"
+    src="dataset/xray preview/Osteoarthritis preview/Osteoarthritis.png" 
+    alt="Osteoarthritis X-ray"
+  >
+  <!-- Disease name text, fades with image -->
+  <span id="disease-label" style="
+    position: absolute;
+    left: 820px;
+    top: 5%;
+    transform: translateY(-50%);
+    font-weight: bold;
+    font-size: 3em;
+    color: #fff;
+    background: rgba(0,0,0,0.5);
+    padding: 12px 28px;
+    border-radius: 8px;
+    z-index: 3;
+    opacity: 1;
+    transition: opacity 0.7s;
+    ">
+    Osteoarthritis
+  </span>
+  <!-- Radiological Findings textbox -->
+  <div id="findings-box" style="
+    position: absolute;
+    left: 820px;
+    top: 15%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 1.3em;
+    padding: 14px 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 3;
+    min-width: 220px;
+    text-align: center;
+    ">
+    Radiological Findings
+  </div>
+  <!-- Four interactive textboxes under the findings box -->
+  <div id="osteoarthritis-info-container" style="
+    position: absolute;
+    left: 850px;
+    top: 20%;
+    transform: translateY(0);
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 2;
+  ">
+    <button class="osteo-btn" data-index="0">Joint Narrowing</button>
+    <button class="osteo-btn" data-index="1">Joint Widening</button>
+    <button class="osteo-btn" data-index="2">Osteophyte</button>
+    <button class="osteo-btn" data-index="3">Sclerosis</button>
+    <!-- The dynamic textbox will be inserted here -->
+  </div>
+  <!-- Dropdown textbox (hidden by default, shown when a finding is clicked) -->
+  <div id="dropdown-detail" style="
+    position: absolute;
+    left: 850px;
+    top: 60%;
+    width: 320px;
+    background: #333;
+    color: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: opacity 0.4s;
+    display: none;
+    z-index: 4;
+  "></div>
+  <button id="arrow-right" class="arrow-btn">&#8594;</button>
+</div>
+<script>
+  // List of images for the slideshow
+  const images = [
+    "dataset/xray preview/Osteoarthritis preview/Osteoarthritis.png",
+    "dataset/xray preview/Osteosarcoma preview/Osteosarcoma.jpg",
+    "dataset/xray preview/Ewing Sarcoma preview/Ewing Sarcoma.jpeg",
+    "dataset/xray preview/Rickets/rickets preview.png", // <-- Add this line
+    "dataset/xray preview/Gout preview/Gout.png" // <-- Add this line
+  ];
+  const labels = [
+    "Osteoarthritis",
+    "Osteosarcoma",
+    "Ewing Sarcoma",
+    "Rickets", // <-- Add this line
+    "Gout" // <-- Add this line
+  ];
+  let currentIndex = 0;
+  const mainXray = document.getElementById('main-xray');
+  const diseaseLabel = document.getElementById('disease-label');
+
+  // Osteoporosis findings data
+ const osteoarthritisFindings = [
+  {
+    label: "Joint Narrowing",
+    img: "dataset/xray preview/Osteoarthritis preview/joint narrowing.png",
+    detail: "The protective cartilage between bones gradually wears away, causing the bones to move closer together.",
+    extra: "Joint space narrowing is a common radiological finding in osteoporosis and can indicate cartilage loss."
+  },
+  {
+    label: "Osteophyte",
+    img: "dataset/xray preview/Osteoarthritis preview/osteophyte.png",
+    detail: "Bony outgrowths, or bone spurs, that form at joint margins as a result of the body trying to repair and stabilize the damaged joint.",
+    extra: "Osteophytes are bony projections that form along joint margins, often seen in degenerative changes."
+  },
+  {
+    label: "Sclerosis",
+    img: "dataset/xray preview/Osteoarthritis preview/sclerosis.png",
+    detail: "The hardening and increased density of the bone due to increased stress and load from cartilage loss.",
+    extra: "Sclerosis refers to increased bone density in a localized area, which can be reactive or degenerative."
+  }
+];
+const osteosarcomaFindings = [
+  {
+    label: "Codman Triangle",
+    img: "dataset/xray preview/Osteosarcoma preview/Codman Triangle.png",
+    detail: "A Codman triangle is a triangular area of new subperiosteal bone that is created when a lesion, often a tumor, raises the periosteum away from the bone.",
+  },
+  {
+    label: "Cortical Bone Destruction",
+    img: "dataset/xray preview/Osteosarcoma preview/Cortical Bone Destruction.png",
+    detail: "Destruction of the cortex of the bone, often seen as irregular or moth-eaten areas, is a classic sign of aggressive bone tumors like osteosarcoma.",
+  },
+  {
+    label: "Sunburst Pattern",
+    img: "dataset/xray preview/Osteosarcoma preview/Sunburst Pattern.png",
+    detail: "The sunburst pattern is a radiating spiculated appearance of bone seen on X-ray, caused by tumor spicules of calcified bone radiating in right angles.",
+  }
+];
+// Add Ewing Sarcoma data
+const ewingSarcomaFindings = [
+  {
+    label: "Codman Triangle",
+    img: "dataset/xray preview/Ewing Sarcoma preview/Codman Triangle.png",
+    detail: "A Codman triangle is a triangular area of new subperiosteal bone that is created when a lesion, often a tumor, raises the periosteum away from the bone.",
+  },
+  {
+    label: "Onion Skin Appearance",
+    img: "dataset/xray preview/Ewing Sarcoma preview/onionskin appearance.png",
+    detail: "Onion skin appearance refers to layers of new bone growth outside the existing bone, seen as concentric rings, and is characteristic of Ewing sarcoma.",
+  },
+  {
+    label: "Soft Tissue Swelling",
+    img: "dataset/xray preview/Ewing Sarcoma preview/soft tissue swelling.jpeg",
+    detail: "Soft tissue swelling is often seen around the affected bone due to tumor extension beyond the bone.",
+  },
+  {
+    label: "Sunburst Appearance",
+    img: "dataset/xray preview/Ewing Sarcoma preview/sunburst appearance.jpeg",
+    detail: "The sunburst appearance is a radiating pattern of bone spicules extending into soft tissue, sometimes seen in aggressive bone tumors like Ewing sarcoma.",
+  }
+];
+
+// Add Rickets findings data
+const ricketsFindings = [
+  {
+    label: "Cupping",
+    img: "dataset/xray preview/Rickets/cupping.png",
+    detail: "Cupping refers to the concave deformity at the metaphyseal ends of long bones, commonly seen in rickets due to defective mineralization."
+  },
+  {
+    label: "Fraying",
+    img: "dataset/xray preview/Rickets/fraying.png",
+    detail: "Fraying describes the irregular, fuzzy appearance of the metaphyseal margins, a hallmark of rickets."
+  },
+  {
+    label: "Physeal Widening",
+    img: "dataset/xray preview/Rickets/physeal widening.png",
+    detail: "Physeal widening is the increased thickness of the growth plate (physis) due to impaired mineralization and cartilage maturation."
+  },
+  {
+    label: "Splaying",
+    img: "dataset/xray preview/Rickets/splaying.png",
+    detail: "Splaying is the flaring or widening of the metaphyseal ends of bones, giving them a trumpet-like appearance."
+  }
+];
+
+// Add Gout findings data
+const goutFindings = [
+  {
+    label: "Soft Tissue Tophi",
+    img: "dataset/xray preview/Gout preview/Soft Tissue Tophi.png",
+    detail: "Tophi are deposits of urate crystals in soft tissues, appearing as soft tissue masses on X-ray, often near joints."
+  },
+  {
+    label: "Punched Out Erosions",
+    img: "dataset/xray preview/Gout preview/Erosions.png",
+    detail: "Well-defined, 'punched out' bone erosions with sclerotic margins, often with overhanging edges, are classic for gout."
+  },
+  {
+    label: "Overhanging Edges",
+    img: "dataset/xray preview/Gout preview/Overhanging Edges.png",
+    detail: "The overhanging edge sign refers to bony projections that hang over the edge of an erosion, typical in chronic gout."
+  }
+];
+
+  // Handle fade and label for main slideshow
+function showImage(index) {
+  mainXray.style.opacity = 0;
+  diseaseLabel.style.opacity = 0;
+
+  // Fade out all radiological findings buttons
+  const infoContainer = document.getElementById('osteoarthritis-info-container');
+  const btns = infoContainer.querySelectorAll('.osteo-btn');
+  btns.forEach(btn => {
+    btn.style.transition = "opacity 0.4s";
+    btn.style.opacity = "0";
+  });
+
+  // Fade out any open detail box
+  if (openDetail) {
+    openDetail.style.opacity = 0;
+  }
+
+  // Fade out the scrollable info box
+  const infoScrollBox = document.getElementById('info-scroll-box');
+  if (infoScrollBox) {
+    infoScrollBox.style.transition = "opacity 0.4s";
+    infoScrollBox.style.opacity = "0";
+  }
+
+  // Fade out the "Radiological Findings" box
+  const findingsBox = document.getElementById('findings-box');
+  if (findingsBox) {
+    findingsBox.style.transition = "opacity 0.4s";
+    findingsBox.style.opacity = "0";
+  }
+
+  setTimeout(() => {
+    mainXray.src = images[index];
+    diseaseLabel.textContent = labels[index];
+
+    // Prevent line break for "Ewing Sarcoma" title
+    if (labels[index] === "Ewing Sarcoma") {
+      diseaseLabel.style.whiteSpace = "nowrap";
+    } else {
+      diseaseLabel.style.whiteSpace = "";
+    }
+
+    diseaseLabel.style.fontSize = "3em";
+    mainXray.style.opacity = 1;
+    diseaseLabel.style.opacity = 1;
+
+    // Fade in the "Radiological Findings" box
+    if (findingsBox) {
+      findingsBox.style.transition = "opacity 0.4s";
+      findingsBox.style.opacity = "1";
+    }
+
+    // Remove any open detail box if not on a disease with findings
+    if ((index < 0 || index > 4) && openDetail) {
+      openDetail.remove();
+      openDetail = null;
+    }
+
+    // Show/hide and update radiological findings buttons
+    infoContainer.innerHTML = '';
+    let findings = [];
+    if (index === 0) {
+      findings = osteoarthritisFindings;
+    } else if (index === 1) {
+      findings = osteosarcomaFindings;
+    } else if (index === 2) {
+      findings = ewingSarcomaFindings;
+    } else if (index === 3) {
+      findings = ricketsFindings;
+    } else if (index === 4) {
+      findings = goutFindings;
+    }
+    findings.forEach((finding, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'osteo-btn';
+      btn.setAttribute('data-index', idx);
+      btn.textContent = finding.label;
+      btn.style.opacity = "0";
+      btn.style.transition = "opacity 0.4s";
+      infoContainer.appendChild(btn);
+    });
+    infoContainer.style.display = findings.length ? 'flex' : 'none';
+    setTimeout(() => {
+      infoContainer.querySelectorAll('.osteo-btn').forEach(btn => {
+        btn.style.opacity = "1";
+      });
+    }, 10);
+
+    // Attach click handlers for the new findings
+    let localOpenDetail = null;
+    let localLastIdx = null;
+    infoContainer.querySelectorAll('.osteo-btn').forEach((btn, idx, btns) => {
+      btn.onclick = function() {
+        if (localLastIdx === idx && localOpenDetail) return;
+
+        function showDetail() {
+          const finding = findings[idx];
+          const detailBox = document.createElement('div');
+          detailBox.className = "osteo-detail";
+          detailBox.style.opacity = "0";
+          detailBox.style.transform = "translateY(-20px)";
+          detailBox.style.marginBottom = "0";
+          detailBox.innerHTML = `
+            <img src="${finding.img}" alt="" style="max-width:120px;max-height:120px;border-radius:6px;margin-right:18px;box-shadow:0 0 8px #000;">
+            <span style="font-size:1.1em;">${finding.detail}</span>
+          `;
+          btn.insertAdjacentElement('afterend', detailBox);
+
+          setTimeout(() => {
+            const detailHeight = detailBox.offsetHeight;
+            const gap = 16;
+            btns.forEach((b, i) => {
+              if (i > idx) {
+                b.style.transform = `translateY(${detailHeight - gap*10}px)`;
+                b.style.transition = "transform 0.4s";
+              } else {
+                b.style.transform = "translateY(0)";
+                b.style.transition = "transform 0.4s";
+              }
+            });
+            detailBox.style.transition = "opacity 0.4s, transform 0.4s";
+            detailBox.style.opacity = "1";
+            detailBox.style.transform = "translateY(0)";
+          }, 10);
+
+          localOpenDetail = detailBox;
+          mainXray.style.opacity = 1;
+          mainXray.src = finding.img;
+          localLastIdx = idx;
+        }
+
+        if (localOpenDetail) {
+          localOpenDetail.style.opacity = 0;
+          localOpenDetail.style.transform = "translateY(-20px)";
+          btns.forEach(b => {
+            b.style.transform = "translateY(0)";
+            b.style.transition = "transform 0.4s";
+          });
+          setTimeout(() => {
+            if (localOpenDetail.parentNode) localOpenDetail.parentNode.removeChild(localOpenDetail);
+            localOpenDetail = null;
+            showDetail();
+          }, 400);
+        } else {
+          showDetail();
+        }
+      };
+    });
+
+    // Fade in and update the scrollable info box with disease-specific content
+    if (infoScrollBox) {
+      if (index === 4) {
+        infoScrollBox.innerHTML = `
+          <div class="info-section">
+            <div class="info-title">Definition</div>
+            <div class="info-space">
+              Gout is a type of inflammatory arthritis caused by the deposition of monosodium urate crystals in joints and soft tissues, leading to acute pain and swelling.
+            </div>
+            <div class="info-space"></div>
+            <div class="info-title">Causes</div>
+            <ul class="info-list">
+              <li>Hyperuricemia (high uric acid in blood)</li>
+              <li>Genetic predisposition</li>
+              <li>Obesity</li>
+              <li>Diet high in purines (red meat, seafood, alcohol)</li>
+              <li>Chronic kidney disease</li>
+              <li>Certain medications (diuretics, aspirin)</li>
+            </ul>
+            <div class="info-title">Symptoms</div>
+            <ul class="info-list">
+              <li>Sudden, severe joint pain (often at night)</li>
+              <li>Redness, warmth, and swelling of affected joint</li>
+              <li>Most commonly affects the big toe (podagra)</li>
+              <li>Tophi (chronic deposits in soft tissue)</li>
+              <li>Limited joint movement</li>
+              <li>Recurrent attacks possible</li>
+            </ul>
+            <div class="info-title">Treatment</div>
+            <ul class="info-list">
+              <li>
+                <strong>NSAIDs:</strong>
+                <br>
+                Nonsteroidal anti-inflammatory drugs are used to reduce pain and inflammation during acute attacks.
+              </li>
+              <li>
+                <strong>Colchicine:</strong>
+                <br>
+                Used to decrease inflammation and pain during acute gout attacks.
+              </li>
+              <li>
+                <strong>Corticosteroids:</strong>
+                <br>
+                May be prescribed orally or injected into the joint to control inflammation.
+              </li>
+              <li>
+                <strong>Urate-lowering therapy:</strong>
+                <br>
+                Medications such as allopurinol or febuxostat to reduce uric acid levels and prevent future attacks.
+              </li>
+              <li>
+                <strong>Lifestyle modifications:</strong>
+                <br>
+                Weight loss, dietary changes, and limiting alcohol intake.
+              </li>
+            </ul>
+          </div>
+        `;
+      } else if (index === 3) {
+        infoScrollBox.innerHTML = `
+          <div class="info-section">
+            <div class="info-title">Definition</div>
+            <div class="info-space">
+              Rickets is a childhood bone disorder where bones soften and become prone to fractures and deformity, primarily due to prolonged vitamin D deficiency.
+            </div>
+            <div class="info-space"></div>
+            <div class="info-title">Causes</div>
+            <ul class="info-list">
+              <li>Vitamin D deficiency (most common)</li>
+              <li>Calcium deficiency</li>
+              <li>Phosphate deficiency</li>
+              <li>Genetic disorders affecting vitamin D metabolism</li>
+              <li>Chronic kidney or liver disease</li>
+              <li>Malabsorption syndromes</li>
+            </ul>
+            <div class="info-title">Symptoms</div>
+            <ul class="info-list">
+              <li>Bone pain or tenderness</li>
+              <li>Delayed growth</li>
+              <li>Muscle weakness</li>
+              <li>Skeletal deformities (bowed legs, thickened wrists/ankles)</li>
+              <li>Dental problems</li>
+              <li>Delayed motor skills</li>
+              <li>Increased risk of fractures</li>
+            </ul>
+            <div class="info-title">Treatment</div>
+            <ul class="info-list">
+              <li>
+                <strong>Vitamin D and Calcium Supplementation:</strong>
+                <br>
+                The mainstay of treatment is correcting the deficiency with oral supplements.
+              </li>
+              <li>
+                <strong>Dietary Changes:</strong>
+                <br>
+                Increasing intake of foods rich in vitamin D and calcium.
+              </li>
+              <li>
+                <strong>Sunlight Exposure:</strong>
+                <br>
+                Encouraging safe sun exposure to boost natural vitamin D production.
+              </li>
+              <li>
+                <strong>Treating Underlying Disorders:</strong>
+                <br>
+                Addressing any underlying medical conditions contributing to rickets.
+              </li>
+              <li>
+                <strong>Bracing or Surgery:</strong>
+                <br>
+                In severe cases, orthopedic intervention may be needed to correct bone deformities.
+              </li>
+            </ul>
+          </div>
+        `;
+      } else if (index === 2) {
+        infoScrollBox.innerHTML = `
+          <div class="info-section">
+            <div class="info-title">Definition</div>
+            <div class="info-space">
+              Ewing sarcoma is a rare and aggressive bone tumor that most commonly affects children and adolescents, typically arising in the long bones, pelvis, or chest wall.
+            </div>
+            <div class="info-space"></div>
+            <div class="info-title">Causes</div>
+            <ul class="info-list">
+              <li>Exact cause unknown</li>
+              <li>Associated with specific chromosomal translocation (EWSR1-FLI1 gene fusion)</li>
+              <li>Most cases are not inherited</li>
+            </ul>
+            <div class="info-title">Symptoms</div>
+            <ul class="info-list">
+              <li>Localized bone pain and swelling</li>
+              <li>Fever</li>
+              <li>Fatigue</li>
+              <li>Unintended weight loss</li>
+              <li>Possible palpable mass</li>
+              <li>Symptoms may mimic infection or injury</li>
+            </ul>
+            <div class="info-title">Treatment</div>
+            <ul class="info-list">
+              <li>
+                <strong>Chemotherapy:</strong>
+                <br>
+                Multi-agent chemotherapy is the mainstay of treatment for Ewing sarcoma.
+              </li>
+              <li>
+                <strong>Surgery:</strong>
+                <br>
+                Surgical removal of the tumor, often combined with limb-sparing techniques.
+              </li>
+              <li>
+                <strong>Radiation Therapy:</strong>
+                <br>
+                Used when surgery is not possible or to treat residual disease after surgery.
+              </li>
+            </ul>
+          </div>
+        `;
+      } else if (index === 1) {
+        infoScrollBox.innerHTML = `
+          <div class="info-section">
+            <div class="info-title">Definition</div>
+            <div class="info-space">
+              Osteosarcoma is a type of aggressive bone cancer that most often starts in the long bones (such as the arms and legs) and primarily affects children, teenagers, and young adults.
+            </div>
+            <div class="info-space"></div>
+            <div class="info-title">Causes</div>
+            <ul class="info-list">
+              <li>Unknown in most cases</li>
+              <li>Genetic predisposition (e.g., Li-Fraumeni syndrome, hereditary retinoblastoma)</li>
+              <li>Previous radiation therapy</li>
+            </ul>
+            <div class="info-title">Symptoms</div>
+            <ul class="info-list">
+              <li>Bone pain (often worsening at night or with activity)</li>
+              <li>Swelling or lump in the affected area</li>
+              <li>Reduced movement of the affected limb</li>
+              <li>Unexplained bone fracture</li>
+              <li>General fatigue or malaise</li>
+            </ul>
+            <div class="info-title">Treatment</div>
+            <ul class="info-list">
+              <li>
+                <strong>Chemotherapy:</strong>
+                <br>
+                Drugs are used to kill cancer cells, often given before and after surgery.
+              </li>
+              <li>
+                <strong>Surgery:</strong>
+                <br>
+                Removal of the tumor and some surrounding healthy tissue; sometimes limb-sparing, sometimes amputation.
+              </li>
+              <li>
+                <strong>Radiation Therapy:</strong>
+                <br>
+                Used less commonly, but may be considered if surgery is not possible.
+              </li>
+            </ul>
+          </div>
+        `;
+      } else if (index === 0) {
+        infoScrollBox.innerHTML = `
+          <div class="info-section">
+            <div class="info-title">Definition</div>
+            <div class="info-space">
+              Osteoarthritis is a degenerative joint disease where the cartilage that cushions the ends of bones in joints wears away over time.
+            </div>
+            <div class="info-space"></div>
+            <div class="info-title">Causes</div>
+            <ul class="info-list">
+              <li>Aging</li>
+              <li>Joint overuse or repetitive stress</li>
+              <li>Obesity</li>
+              <li>Previous joint injuries</li>
+              <li>Genetics or family history</li>
+              <li>Weak muscles supporting the joint</li>
+              <li>Poor joint alignment (e.g., bow legs)</li>
+              <li>Congenital joint abnormalities</li>
+              <li>Inflammatory joint diseases (e.g., rheumatoid arthritis)</li>
+              <li>Metabolic disorders (e.g., hemochromatosis)</li>
+              <li>Bone deformities</li>
+              <li>Gender (more common in women)</li>
+              <li>Occupations requiring heavy physical labor</li>
+              <li>Sports or activities with high joint impact</li>
+            </ul>
+            <div class="info-title">Symptoms</div>
+            <ul class="info-list">
+              <li>Joint pain (especially during or after movement)</li>
+              <li>Stiffness (particularly in the morning or after inactivity)</li>
+              <li>Decreased range of motion</li>
+              <li>Swelling around the joint</li>
+              <li>Joint tenderness</li>
+              <li>Grating or cracking sensation (crepitus) during movement</li>
+              <li>Bone spurs (osteophytes) felt as hard lumps</li>
+              <li>Joint instability or buckling</li>
+              <li>Muscle weakness around the joint</li>
+              <li>Joint deformity in advanced stages</li>
+              <li>Fatigue due to chronic pain</li>
+              <li>Difficulty performing daily activities</li>
+            </ul>
+            <div class="info-title">Treatment</div>
+            <ul class="info-list">
+              <li>
+                <strong>Cortisone Injections:</strong>
+                <br>
+                Corticosteroids can be injected directly into the joint to reduce inflammation and relieve pain for several weeks. However, due to the risk of worsening joint damage, these injections are typically limited to three or four times per year.
+              </li>
+              <li>
+                <strong>Lubrication Injections (Hyaluronic Acid):</strong>
+                <br>
+                These injections aim to mimic natural joint fluid and may offer cushioning to relieve knee pain. Research results are mixed, with some studies showing little to no benefit beyond a placebo effect.
+              </li>
+              <li>
+                <strong>Realigning Bones (Osteotomy):</strong>
+                <br>
+                Osteotomy surgery involves reshaping the bone to shift weight away from the damaged area of the knee. It can relieve pressure and improve function, especially when arthritis affects only one side of the knee.
+              </li>
+              <li>
+                <strong>Joint Replacement Surgery:</strong>
+                <br>
+                This procedure replaces worn-out joint surfaces with artificial components made of metal and plastic. While it can significantly improve mobility and pain, it carries surgical risks and the artificial joint may eventually need to be replaced.
+              </li>
+            </ul>
+          </div>
+        `;
+      }
+      infoScrollBox.style.transition = "opacity 0.4s";
+      infoScrollBox.style.opacity = "1";
+    }
+  }, 700);
+}
+mainXray.onclick = function () {
+  // If already showing the original image, do nothing
+  if (mainXray.src.replace(/^.*[\\/]/, '') === images[currentIndex].replace(/^.*[\\/]/, '')) return;
+
+  mainXray.style.opacity = 1;
+  setTimeout(() => {
+    mainXray.src = images[currentIndex];
+    mainXray.style.opacity = 1;
+  }, 0);
+};
+// Update arrow event handlers to allow cycling through all five diseases
+document.getElementById('arrow-left').onclick = function() {
+  currentIndex = (currentIndex - 1 + images.length) % images.length;
+  showImage(currentIndex);
+};
+document.getElementById('arrow-right').onclick = function() {
+  currentIndex = (currentIndex + 1) % images.length;
+  showImage(currentIndex);
+};
+
+  // Dynamically generate the buttons from osteoporosisFindings
+  const infoContainer = document.getElementById('osteoarthritis-info-container');
+  infoContainer.innerHTML = ''; // Clear any existing content
+
+  osteoarthritisFindings.forEach((finding, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'osteo-btn';
+    btn.setAttribute('data-index', idx);
+    btn.textContent = finding.label;
+    infoContainer.appendChild(btn);
+  });
+
+
+let openDetail = null;
+let lastIdx = null;
+
+// Attach click handlers to the dynamically created buttons
+infoContainer.querySelectorAll('.osteo-btn').forEach((btn, idx, btns) => {
+  btn.onclick = function() {
+    // If the same button is clicked, do nothing (keep the box)
+    if (lastIdx === idx && openDetail) return;
+
+    // Function to show the new detail box
+    function showDetail() {
+      const finding = osteoarthritisFindings[idx];
+      const detailBox = document.createElement('div');
+      detailBox.className = "osteo-detail";
+      // Start hidden and slightly above
+      detailBox.style.opacity = "0";
+      detailBox.style.transform = "translateY(-20px)";
+      detailBox.style.marginBottom = "0";
+      detailBox.innerHTML = `
+        <img src="${finding.img}" alt="" style="max-width:120px;max-height:120px;border-radius:6px;margin-right:18px;box-shadow:0 0 8px #000;">
+        <span style="font-size:1.1em;">${finding.detail}</span>
+      `;
+      btn.insertAdjacentElement('afterend', detailBox);
+
+      // Move all buttons below the clicked one down by the height of the detail box (minus gap)
+      setTimeout(() => {
+        const detailHeight = detailBox.offsetHeight;
+        const gap = 16;
+        btns.forEach((b, i) => {
+          if (i > idx) {
+            b.style.transform = `translateY(${detailHeight - gap*10}px)`;
+            b.style.transition = "transform 0.4s";
+          } else {
+            b.style.transform = "translateY(0)";
+            b.style.transition = "transform 0.4s";
+          }
+        });
+        // Fade in and slide down the detail box
+        detailBox.style.transition = "opacity 0.4s, transform 0.4s";
+        detailBox.style.opacity = "1";
+        detailBox.style.transform = "translateY(0)";
+      }, 10);
+
+      openDetail = detailBox;
+      mainXray.style.opacity = 1;
+      mainXray.src = finding.img;
+      lastIdx = idx;
+    }
+
+    // If there is an open detail, fade it out and remove, then show new
+    if (openDetail) {
+      openDetail.style.opacity = 0;
+      openDetail.style.transform = "translateY(-20px)";
+      btns.forEach(b => {
+        b.style.transform = "translateY(0)";
+        b.style.transition = "transform 0.4s";
+      });
+      setTimeout(() => {
+        if (openDetail.parentNode) openDetail.parentNode.removeChild(openDetail);
+        openDetail = null;
+        showDetail();
+      }, 400);
+    } else {
+      showDetail();
+    }
+  };
+});
+
+// Hide osteoporosis info container if not on first image
+document.getElementById('osteoarthritis-info-container').style.display = 'flex';
+</script>
+    <script type="module" src="./main.js"></script>
+    <!-- Place this script at the end of your <body>, after all other scripts -->
+<script>
+  document.getElementById('start-guessing-btn').onclick = function() {
+  // Fade out everything except the title "BoneGuessr"
+  Array.from(document.body.children).forEach(child => {
+    if (child.id !== "heading") {
+      child.style.transition = "opacity 0.5s, transform 0.5s";
+      child.style.opacity = "0";
+      child.style.transform = "translateY(40px)";
+      setTimeout(() => {
+        child.style.display = "none";
+      }, 500);
+    }
+  });
+  // Fade out all children of #heading except the <a> (which contains the title)
+  Array.from(document.getElementById('heading').children).forEach(child => {
+    if (child.tagName !== "A") {
+      child.style.transition = "opacity 0.5s, transform 0.5s";
+      child.style.opacity = "0";
+      child.style.transform = "translateY(40px)";
+      setTimeout(() => {
+        child.style.display = "none";
+      }, 500);
+    }
+  });
+  setTimeout(createGameUI, 700); // Show game options after fade
+};
+
+function createGameUI() {
+  // Hide everything except the title
+  Array.from(document.body.children).forEach(child => {
+    if (child.id !== "heading") child.style.display = "none";
+  });
+
+  // Create options for Fractures and Disorders
+  const optionsDiv = document.createElement('div');
+  optionsDiv.id = "game-options";
+  optionsDiv.style.display = "flex";
+  optionsDiv.style.flexDirection = "column";
+  optionsDiv.style.alignItems = "center";
+  optionsDiv.style.marginTop = "40px";
+
+  optionsDiv.innerHTML = `
+    <label style="font-size:1.2em;margin-bottom:12px; color: #fff;">
+      <input type="checkbox" id="fracture-checkbox" checked>
+      Fractures
+    </label>
+    <label style="font-size:1.2em;margin-bottom:24px; color: #fff;">
+      <input type="checkbox" id="disorder-checkbox" checked>
+      Disorders
+    </label>
+    <button id="start-game-btn" style="
+      font-size:1.1em;
+      padding:8px 28px;
+      border-radius:6px;
+      border:none;
+      background:#222;
+      color:#fff;
+      cursor:pointer;
+      margin-bottom:24px;
+    ">Start Game</button>
+  `;
+  document.body.appendChild(optionsDiv);
+
+  document.getElementById('start-game-btn').onclick = startGame;
+}
+
+// --- GAME LOGIC ---
+async function startGame() {
+  // Get selected options BEFORE removing the UI
+  const useFractures = document.getElementById('fracture-checkbox').checked;
+  const useDisorders = document.getElementById('disorder-checkbox').checked;
+
+  // Now remove options UI
+  document.getElementById('game-options').remove();
+
+  // Get all image paths and answers
+  const { images, answers } = await getAllImagesAndAnswers(useFractures, useDisorders);
+
+  // If no images, show error
+  if (images.length === 0) {
+    showMessage("No images found for selected options.", "red");
+    return;
+  }
+
+  // Create game UI
+  createGamePlayUI();
+
+  // Start game loop
+  let currentIdx = -1;
+  let usedIndices = [];
+  nextRound();
+
+  function nextRound() {
+    // Pick a random image not used yet
+    if (usedIndices.length === images.length) usedIndices = [];
+    let idx;
+    do {
+      idx = Math.floor(Math.random() * images.length);
+    } while (usedIndices.includes(idx) && usedIndices.length < images.length);
+    usedIndices.push(idx);
+
+    // Show image
+    document.getElementById('game-xray').src = images[idx];
+    document.getElementById('game-xray').style.opacity = "1";
+    document.getElementById('game-input').value = "";
+    document.getElementById('game-feedback').textContent = "";
+    currentIdx = idx;
+  }
+
+  // Handle guess
+  document.getElementById('game-submit').onclick = checkGuess;
+  document.getElementById('game-input').onkeydown = function(e) {
+    if (e.key === "Enter") checkGuess();
+  };
+
+  function checkGuess() {
+    const userGuess = document.getElementById('game-input').value.trim().toLowerCase();
+    const correct = answers[currentIdx].toLowerCase();
+    if (userGuess === correct) {
+      showMessage("Correct!", "green");
+      setTimeout(nextRound, 1200);
+    } else {
+      showMessage(`Incorrect, the answer is ${answers[currentIdx]}.`, "red");
+      setTimeout(nextRound, 1800);
+    }
+  }
+}
+
+// --- GAME UI HELPERS ---
+function createGamePlayUI() {
+  // Main container
+  const container = document.createElement('div');
+  container.id = "game-container";
+  container.style.display = "flex";
+  container.style.flexDirection = "column";
+  container.style.alignItems = "center";
+  container.style.marginTop = "40px";
+
+  // X-ray image
+  const img = document.createElement('img');
+  img.id = "game-xray";
+  img.style.maxWidth = "500px";
+  img.style.maxHeight = "500px";
+  img.style.borderRadius = "12px";
+  img.style.boxShadow = "0 0 18px #000";
+  img.style.marginBottom = "28px";
+  container.appendChild(img);
+
+  // Input
+  const input = document.createElement('input');
+  input.id = "game-input";
+  input.type = "text";
+  input.autocomplete = "off";
+  input.placeholder = "Type the name of the fracture/disorder...";
+  input.style.fontSize = "1.2em";
+  input.style.padding = "10px 18px";
+  input.style.borderRadius = "6px";
+  input.style.border = "1px solid #888";
+  input.style.marginBottom = "18px";
+  input.style.width = "320px";
+  container.appendChild(input);
+
+  // Submit button
+  const submit = document.createElement('button');
+  submit.id = "game-submit";
+  submit.textContent = "Submit";
+  submit.style.fontSize = "1.1em";
+  submit.style.padding = "8px 24px";
+  submit.style.borderRadius = "6px";
+  submit.style.border = "none";
+  submit.style.background = "#222";
+  submit.style.color = "#fff";
+  submit.style.cursor = "pointer";
+  submit.style.marginBottom = "18px";
+  container.appendChild(submit);
+
+  // Feedback
+  const feedback = document.createElement('div');
+  feedback.id = "game-feedback";
+  feedback.style.fontSize = "1.3em";
+  feedback.style.fontWeight = "bold";
+  feedback.style.height = "32px";
+  feedback.style.marginTop = "8px";
+  container.appendChild(feedback);
+
+  document.body.appendChild(container);
+}
+
+function showMessage(msg, color) {
+  const feedback = document.getElementById('game-feedback');
+  feedback.textContent = msg;
+  feedback.style.color = color;
+}
+
+// --- IMAGE/ANSWER LOADING ---
+// This function uses your provided folder names and expects images inside each folder.
+// You must update the image filenames to match your actual files.
+async function getAllImagesAndAnswers(useFractures, useDisorders) {
+  const fractureFolders = Object.keys(fractureManifest);
+  const disorderFolders = Object.keys(disorderManifest);
+
+  let images = [];
+  let answers = [];
+
+  if (useFractures) {
+    fractureFolders.forEach(folder => {
+      fractureManifest[folder].forEach(img =>
+        images.push(`dataset/Fractures/${folder}/${img}`) && answers.push(folder)
+      );
+    });
+  }
+  if (useDisorders) {
+    disorderFolders.forEach(folder => {
+      disorderManifest[folder].forEach(img =>
+        images.push(`dataset/Disorders/${folder}/${img}`) && answers.push(folder)
+      );
+    });
+  }
+
+  // Shuffle images and answers together
+  for (let i = images.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [images[i], images[j]] = [images[j], images[i]];
+    [answers[i], answers[j]] = [answers[j], answers[i]];
+  }
+
+  return { images, answers };
+}
+
+// --- HOOK UP TO START GUESSING BUTTON ---
+const fractureManifest = {
+  "Avulsion": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png"],
+  "Comminuted": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png"],
+  "Compression": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png"],
+  "Greenstick": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png"],
+  "Hairline": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png"],
+  "Oblique": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png"],
+  "Pathologic": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png"],
+  "Spiral": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png"],
+  "Transverse": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png"]
+};
+const disorderManifest = {
+  "Ewing Sarcoma": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png"],
+  "Gout": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png", "13.png"],
+  "Osteoarthritis": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png"],
+  "Osteomyelitis": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png"],
+  "Osteosarcoma": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png"],
+  "Paget's disease": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png"],
+  "Rheumatoid Arthritis": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png"],
+  "Rickets": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png"]
+};
+
+    </script>
+    </body>
+</html>

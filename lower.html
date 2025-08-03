@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lower Limb</title>
+    <link rel="stylesheet" href="public/index.css">
+    <style>
+        /* Add styles for the button container and buttons */
+        #button-container {
+            display: flex;
+            justify-content: space-evenly; /* Evenly distribute buttons */
+            align-items: center;
+            margin-top: 70px; /* Adjusted to make buttons visible */
+        }
+
+        .atlas-button {
+            padding: 15px 30px;
+            font-size: 16px;
+            color: white;
+            background-color: #0d1114; /* Blue background */
+            border: 1px solid white; /* Add a white border */
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.7s ease, opacity 0.7s ease; /* Smooth transition for hover, fade-in, and move-up */
+            opacity: 0; /* Start invisible for fade-up animation */
+            transform: translateY(20px); /* Start slightly below */
+        }
+
+        .atlas-button:hover {
+            background-color: #1a1f24; /* Darker blue on hover */
+        }
+
+        .fade-up {
+            opacity: 1; /* Fully visible */
+            transform: translateY(0); /* Move to original position */
+        }
+
+        /* Flex container for images */
+        #image-container {
+            display: flex;
+            justify-content: center; /* Center the images horizontally */
+            align-items: center; /* Align the images vertically */
+            gap: 280px; /* Add consistent space between the images */
+            margin: 20px auto;
+        }
+
+        #image-container img:nth-child(4) {
+    margin-left: -30px; /* or use left: 40px with position: relative */
+}
+
+#image-container img:nth-child(3) {
+    margin-left: -90px; /* or use left: 40px with position: relative */
+}
+
+#image-container img:nth-child(2) {
+    margin-left: -90px; /* or use left: 40px with position: relative */
+}
+#image-container img:nth-child(2) {
+  
+scale:(1.6);
+}
+
+
+
+    </style>
+</head>
+<body>
+    <div id="heading">
+        <!-- Make the title clickable -->
+        <a href="atlas.html" style="text-decoration: none; color: inherit;">
+            <h1>Lower Limb</h1>
+        </a>
+        <div class="border"></div>
+    </div>
+    <div id="content">
+        <p>Welcome to the Atlas page!</p>
+
+        <!-- Flex container for images -->
+        <div id="image-container">
+            <img id="pelvis-image" src="public/previews/pelvis img.png" alt="Pelvis Image" > 
+            <img id="femur-image" src="public/previews/femur img.png" alt="Femur Image">
+            <img id="tibia-image" src="public/previews/tibia img.png" alt="Tibia Image">
+            <img id="fibula-image" src="public/previews/fibula img.png" alt="Fibula Image" >
+            <img id="foot-image" src="public/previews/foot img.png" alt="Foot Image">
+            
+        </div>
+    </div>
+
+    <!-- Button container -->
+    <div id="button-container">
+        <a href="Apelvis.html" class="atlas-button">Pelvis</a>
+        <a href="Afemur.html" class="atlas-button">Femur</a>
+        <a href="Atibia.html" class="atlas-button">Tibia</a>
+        <a href="Afibula.html" class="atlas-button">Fibula</a>
+        <a href="Afoot.html" class="atlas-button">Foot</a>
+    </div>
+
+    <script type="module">
+        // Apply fade-up animation only to buttons
+        window.addEventListener('load', () => {
+            const buttons = document.querySelectorAll('.atlas-button');
+            buttons.forEach((button, index) => {
+                setTimeout(() => {
+                    button.classList.add('fade-up');
+                }, index * 200); // Staggered animation
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trunk</title>
+    <link rel="stylesheet" href="public/index.css">
+    <style>
+        /* Add styles for the button container and buttons */
+        #button-container {
+            display: flex;
+            justify-content: space-evenly; /* Evenly distribute buttons */
+            align-items: center;
+            margin-top: 70px; /* Adjusted to make buttons visible */
+        }
+
+        .atlas-button {
+            padding: 15px 30px;
+            font-size: 16px;
+            color: white;
+            background-color: #0d1114; /* Blue background */
+            border: 1px solid white; /* Add a white border */
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.7s ease, opacity 0.7s ease; /* Smooth transition for hover, fade-in, and move-up */
+            opacity: 0; /* Start invisible for fade-up animation */
+            transform: translateY(20px); /* Start slightly below */
+        }
+
+        .atlas-button:hover {
+            background-color: #1a1f24; /* Darker blue on hover */
+        }
+
+        .fade-up {
+            opacity: 1; /* Fully visible */
+            transform: translateY(0); /* Move to original position */
+        }
+
+        /* Flex container for images */
+        #image-container {
+            display: flex;
+            justify-content: center; /* Center the images horizontally */
+            align-items: center; /* Align the images vertically */
+            gap: 200px; /* Add consistent space between the images */
+            margin: 20px auto;
+            scale: 0.7;
+        }
+
+        #image-container img:nth-child(4) {
+    margin-left: -30px; /* or use left: 40px with position: relative */
+}
+
+#image-container img:nth-child(3) {
+    margin-left: -50px; /* or use left: 40px with position: relative */
+}
+
+#image-container img:nth-child(2) {
+    margin-left: -90px; /* or use left: 40px with position: relative */
+}
+#image-container img:nth-child(6) {
+    margin-left: -90px; /* or use left: 40px with position: relative */
+}
+#image-container img:nth-child(5) {
+    margin-left: -30px; /* or use left: 40px with position: relative */
+}
+
+
+
+    </style>
+</head>
+<body>
+    <div id="heading">
+        <!-- Make the title clickable -->
+        <a href="atlas.html" style="text-decoration: none; color: inherit;">
+            <h1>Trunk</h1>
+        </a>
+        <div class="border"></div>
+    </div>
+    <div id="content">
+        <p>Welcome to the Atlas page!</p>
+
+        <!-- Flex container for images -->
+        <div id="image-container">
+            <img id="atlas-image" src="public/previews/atlas vertebrae img.png" alt="Pelvis Image" > 
+            <img id="axis-image" src="public/previews/axis vertebrae img.png" alt="Femur Image">
+            <img id="cervicle-image" src="public/previews/cervicle vertebrae img.png" alt="Tibia Image">
+            <img id="thoracic-image" src="public/previews/thoracic vertebrae img.png" alt="Fibula Image" >
+            <img id="lumbar-image" src="public/previews/lumbar vertebrae img.png" alt="Foot Image">
+            <img id="sacrum-image" src="public/previews/sacrum img.png" alt="Foot Image">
+            
+        </div>
+    </div>
+
+    <!-- Button container -->
+    <div id="button-container">
+        <a href="Ascapula.html" class="atlas-button">Atlas</a>
+        <a href="Ahumerus.html" class="atlas-button">Axis</a>
+        <a href="Aradius.html" class="atlas-button">Cervicle</a>
+        <a href="Aulna.html" class="atlas-button">Thoracic</a>
+        <a href="Ahand.html" class="atlas-button">Lumbar</a>
+        <a href="Ahand.html" class="atlas-button">Sacrum</a>
+    </div>
+
+    <script type="module">
+        // Apply fade-up animation only to buttons
+        window.addEventListener('load', () => {
+            const buttons = document.querySelectorAll('.atlas-button');
+            buttons.forEach((button, index) => {
+                setTimeout(() => {
+                    button.classList.add('fade-up');
+                }, index * 200); // Staggered animation
+            });
+        });
+    </script>
+</body>
+</html>

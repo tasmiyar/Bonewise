@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <link rel="stylesheet" href="public/index.css">
+    <style>
+        /* Add styles for the button container and buttons */
+        #button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 140px; /* Set gap between buttons to 130px */
+            margin-top: 30px; /* Less space between images and buttons */
+        }
+
+        .atlas-button {
+            padding: 15px 30px;
+            font-size: 16px;
+            color: white;
+            background-color: #0d1114; /* Blue background */
+            border: 1px solid white; /* Add a white border */
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.7s ease, opacity 0.7s ease; /* Smooth transition for hover, fade-in, and move-up */
+            opacity: 0; /* Start invisible for fade-up animation */
+            transform: translateY(20px); /* Start slightly below */
+        }
+
+        .atlas-button:hover {
+            background-color: #1a1f24; /* Darker blue on hover */
+        }
+
+        .fade-up {
+            opacity: 1; /* Fully visible */
+            transform: translateY(0); /* Move to original position */
+        }
+
+        /* Flex container for images */
+        #image-container {
+            display: flex;
+            justify-content: center; /* Center the images horizontally */
+            align-items: center; /* Align the images vertically */
+            gap: 60px; /* Closer images */
+            margin: 20px auto 0 auto;
+        }
+
+        /* Style for the skull image */
+        #skull-image {
+            width: 200px; /* Reduced width */
+            height: auto; /* Maintain aspect ratio */
+            border: 2px solid black;
+            border-radius: 10px;
+        }
+
+        /* Style for the rib cage image */
+        #rib-cage-image {
+            width: 200px; /* Same width as the skull image */
+            height: auto; /* Maintain aspect ratio */
+            border: 2px solid black;
+            border-radius: 10px;
+        }
+
+        /* Style for the hand image */
+        #hand-image {
+            width: 200px; /* Same width as the skull and rib cage images */
+            height: auto; /* Maintain aspect ratio */
+            border: 2px solid black;
+            border-radius: 10px;
+        }
+
+        /* Style for the foot image */
+        #foot-image {
+            width: 170px; /* Same width as the other images */
+            height: auto; /* Maintain aspect ratio */
+            border: 2px solid black;
+            border-radius: 10px;
+            margin-left: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div id="heading">
+        <!-- Make the title clickable -->
+        <a href="index.html" style="text-decoration: none; color: inherit;">
+            <h1>Quiz</h1>
+        </a>
+        <div class="border"></div>
+    </div>
+    <div id="content">
+        <p>Welcome to the Quiz page!</p>
+
+        <!-- Flex container for images -->
+        <div id="image-container">
+            <!-- Removed skull image -->
+            <!-- Removed rib cage image (trunk) -->
+            <img id="hand-image" src="public/previews/hand img.png" alt="Hand Image">
+            <img id="foot-image" src="public/previews/foot img.png" alt="Foot Image">
+        </div>
+    </div>
+
+    <!-- Button container -->
+    <div id="button-container">
+        <!-- Removed Head button -->
+        <!-- Removed Trunk button -->
+        <a href="QUpper.html" class="atlas-button">Upper Limb</a>
+        <a href="QLower.html" class="atlas-button">Lower Limb</a>
+    </div>
+
+    <script type="module">
+        // Apply fade-up animation only to buttons
+        window.addEventListener('load', () => {
+            const buttons = document.querySelectorAll('.atlas-button');
+            buttons.forEach((button, index) => {
+                setTimeout(() => {
+                    button.classList.add('fade-up');
+                }, index * 200); // Staggered animation
+            });
+        });
+    </script>
+</body>
+</html>

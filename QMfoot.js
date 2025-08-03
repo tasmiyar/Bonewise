@@ -1,0 +1,361 @@
+import * as THREE from './node_modules/three/build/three.module.js';
+import { GLTFLoader } from './node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
+
+// ==== Setup Scene ==== 
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+let isModelDragging = false;
+let modelGroup = null;
+const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+const dragPoint = new THREE.Vector3();
+
+// ==== Lighting ==== 
+const spotLight = new THREE.SpotLight(0xffffff, 2, 40, 0.2, 0.5); // Reduced intensity
+spotLight.position.set(10, 20, 10);
+spotLight.castShadow = true; // Enable shadow casting
+scene.add(spotLight);
+
+const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.5); // Reduced intensity
+hemisphereLight.position.set(0, 20, 0);
+scene.add(hemisphereLight);
+
+const ambientLight = new THREE.AmbientLight(0x404040, 0.2); // Reduced intensity
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5); // Reduced intensity
+directionalLight.position.set(5, 10, 5); // Position the light
+directionalLight.castShadow = true; // Enable shadow casting
+scene.add(directionalLight);
+
+// Adjust the Spotlight
+spotLight.intensity = 1.5; // Further reduced intensity
+
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+// ==== UI Elements ==== 
+const meshNameBox = document.createElement('div');
+const feedbackBox = document.createElement('div');
+const instructionText = document.createElement('div');
+const scoreDisplay = document.createElement('div');
+const incorrectAnswersBox = document.createElement('div');
+const incorrectAnswersHeader = document.createElement('div');
+
+// Setup Instruction Text
+instructionText.textContent = 'Click on the bone marking:';
+Object.assign(instructionText.style, {
+    position: 'absolute',
+    top: '45%',
+    left: '70%',
+    transform: 'translate(-50%, -50%)',
+    color: 'white',
+    fontSize: '18px',
+});
+document.body.appendChild(instructionText);
+
+// Setup Mesh Name Box
+Object.assign(meshNameBox.style, {
+    position: 'absolute', top: '50%', left: '70%', transform: 'translate(-50%, -50%)',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)', color: 'white', padding: '10px 20px',
+    border: '1px solid white', borderRadius: '5px', fontSize: '16px', opacity: '1'
+});
+document.body.appendChild(meshNameBox);
+
+// Setup Feedback Box
+Object.assign(feedbackBox.style, {
+    position: 'absolute', top: '55%', left: '70%', transform: 'translateX(-50%)',
+    padding: '10px 20px', borderRadius: '5px', fontSize: '18px', fontWeight: 'bold'
+});
+document.body.appendChild(feedbackBox);
+
+// Setup Score Display
+Object.assign(scoreDisplay.style, {
+    position: 'absolute', top: '35%', left: '66.3%',
+    color: 'white', fontSize: '23px', backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: '5px 10px', borderRadius: '5px'
+});
+document.body.appendChild(scoreDisplay);
+
+// Setup Incorrect Answers Box
+incorrectAnswersHeader.textContent = 'Incorrect Answers:';
+Object.assign(incorrectAnswersHeader.style, {
+    position: 'absolute', top: '30%', left: '11%', color: 'white', fontSize: '18px', fontWeight: 'bold'
+});
+document.body.appendChild(incorrectAnswersHeader);
+
+Object.assign(incorrectAnswersBox.style, {
+    position: 'absolute', top: '35%', left: '11%', width: '300px', height: '80%', 
+    overflowY: 'auto', backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white',
+    padding: '10px', fontSize: '14px', borderRadius: '5px', border: '0px solid white'
+    
+});
+document.body.appendChild(incorrectAnswersBox);
+
+// Initial opacity set to 0
+incorrectAnswersHeader.style.opacity = '0';
+incorrectAnswersHeader.style.transition = 'opacity 2s ease';
+
+// Fade in after slight delay on load
+setTimeout(() => {
+    incorrectAnswersHeader.style.opacity = '1';
+}, 200);
+
+
+// ==== Quiz Logic ==== 
+const meshNames = [
+'calcaneus',
+    'cuboid',
+    'distal_phalanx',
+    'intermediate_cuneiform',
+    'lateral_cuneiform',
+    'medial_cuneiform',
+    'metatarsal',
+    'middle_phalanx',
+    'navicular',
+    'proximal_phalanx',
+    'talus',
+    
+];
+
+let currentTarget = '';
+let score = 0;
+let attempts = 0;
+let incorrectAnswers = [];
+updateScoreDisplay();
+
+
+
+// Function to update the score display
+function updateScoreDisplay() {
+    scoreDisplay.textContent = `Score: ${score} / ${meshNames.length}`;
+}
+
+// Function to add incorrect answers to the list
+function addIncorrectAnswer(answer) {
+    incorrectAnswers.push(answer);
+    incorrectAnswersBox.innerHTML = incorrectAnswers.map(ans => ans).join('<br>');
+}
+
+// Function to pick a random target
+let remainingTargets = [...meshNames];
+
+function pickRandomTarget() {
+    if (remainingTargets.length === 0) {
+        endQuiz();
+        return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * remainingTargets.length);
+    currentTarget = remainingTargets[randomIndex];
+    remainingTargets.splice(randomIndex, 1);
+
+    const cleanName = currentTarget.replace(/\d+/g, '').replace(/_/g, ' ').trim();
+    meshNameBox.textContent = cleanName;
+}
+
+function endQuiz() {
+    meshNameBox.textContent = `Quiz Complete! Score: ${score}/${meshNames.length}`;
+    
+    if (!restartButton) {
+        restartButton = document.createElement('button');
+        restartButton.textContent = 'Restart Quiz';
+        Object.assign(restartButton.style, {
+            position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)',
+            padding: '10px 20px', fontSize: '16px'
+        });
+        restartButton.onclick = () => restartQuiz();
+        document.body.appendChild(restartButton);
+    }
+}
+
+pickRandomTarget();
+
+// ==== Load Model ==== 
+const loader = new GLTFLoader();
+loader.setPath('./public/lower/');
+loader.load('foot.gltf', (gltf) => {
+    modelGroup = new THREE.Group();
+    const model = gltf.scene;
+
+    model.traverse((child) => {
+        if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+
+            if (!child.material.emissive) {
+                child.material = new THREE.MeshStandardMaterial({
+                    color: child.material.color,
+                    map: child.material.map || null
+                });
+            }
+        }
+        if (!child.userData.originalEmissive && child.material?.emissive) {
+            child.userData.originalEmissive = child.material.emissive.clone();
+        }
+
+        if (child.isMesh) {
+            // Example condition: prevent highlight on "head"
+            if (child.name === 'Mesh0') {
+                child.userData.noHighlight = true;
+            }
+        }
+    });
+
+    modelGroup.add(model);
+    scene.add(modelGroup);
+
+    const box = new THREE.Box3().setFromObject(model);
+    const center = box.getCenter(new THREE.Vector3());
+    model.position.sub(center);
+    model.position.y = -1;
+});
+
+// ==== Camera ==== 
+camera.position.set(0, 1, 15);
+controls.update();
+
+// ==== Interactivity ==== 
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let highlighted = null;
+let originalEmissiveColor = new THREE.Color();
+
+function highlightMesh(intersects) {
+    if (highlighted && (!intersects.length || highlighted !== intersects[0].object)) {
+        if (highlighted.material?.emissive && highlighted.userData.originalEmissive) {
+            highlighted.material.emissive.copy(highlighted.userData.originalEmissive);
+        }
+        highlighted = null;
+    }
+
+    if (intersects.length > 0) {
+        const mesh = intersects[0].object;
+
+        // ⛔ Skip if mesh is flagged not to highlight
+        if (mesh.userData.noHighlight) return;
+
+        if (mesh.material?.emissive) {
+            if (!mesh.userData.originalEmissive) {
+                mesh.userData.originalEmissive = mesh.material.emissive.clone();
+            }
+
+            highlighted = mesh;
+            mesh.material.emissive.set(0xffff00);
+        }
+    }
+}
+
+window.addEventListener('mousemove', (event) => {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(scene.children, true);
+    highlightMesh(intersects);
+});
+
+function showFeedback(message, color) {
+    feedbackBox.textContent = message;
+    feedbackBox.style.backgroundColor = color;
+
+    feedbackBox.style.opacity = '1';
+    setTimeout(() => {
+        feedbackBox.style.transition = 'opacity 1s ease-out';
+        feedbackBox.style.opacity = '0';
+    }, 1000);
+}
+
+window.addEventListener('click', (event) => {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(scene.children, true);
+
+    if (intersects.length > 0) {
+        const clickedMesh = intersects[0].object;
+        console.log('Clicked mesh name:', clickedMesh.name);
+
+        const clickedName = clickedMesh.name.toLowerCase().replace(/_/g, ' ').replace(/\d+/g, '').trim();
+        const targetClean = currentTarget.replace(/\d+/g, '').replace(/_/g, ' ').trim().toLowerCase();
+
+        if (clickedName === targetClean) {
+            score++;
+            showFeedback('Correct!', 'green');
+        } else {
+            showFeedback('Incorrect!', 'red');
+            addIncorrectAnswer(currentTarget.replace(/\d+/g, '').replace(/_/g, ' ').trim());
+        }
+
+        attempts++;
+        updateScoreDisplay();
+
+        setTimeout(() => {
+            if (attempts === meshNames.length) {
+                endQuiz();
+            } else {
+                pickRandomTarget();
+            }
+        }, 1000);
+    }
+});
+
+// Levenshtein distance function (as provided in your code)
+function calculateLevenshteinDistance(a, b) {
+    const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+
+    for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+    for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+    for (let i = 1; i <= a.length; i++) {
+        for (let j = 1; j <= b.length; j++) {
+            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+            matrix[i][j] = Math.min(
+                matrix[i - 1][j] + 1,
+                matrix[i][j - 1] + 1,
+                matrix[i - 1][j - 1] + cost
+            );
+        }
+    }
+
+    return matrix[a.length][b.length];
+}
+let restartButton = null;
+function restartQuiz() {
+    // Reset game state
+    score = 0;
+    attempts = 0;
+    incorrectAnswers = [];
+    remainingTargets = [...meshNames];
+    currentTarget = '';
+
+    // Clear UI
+    updateScoreDisplay();
+    feedbackBox.textContent = '';
+    incorrectAnswersBox.innerHTML = '';
+    meshNameBox.textContent = '';
+
+    // Remove the restart button
+    if (restartButton) {
+        restartButton.remove();
+        restartButton = null;
+    }
+
+    pickRandomTarget();
+}
+
+
+
+
+// ==== Animate ==== 
+function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+}
+animate();
+
