@@ -213,16 +213,17 @@ loader.load('pelvis.gltf', (gltf) => {
                     map: child.material.map || null
                 });
             }
-        }
-        if (!child.userData.originalEmissive && child.material?.emissive) {
-            child.userData.originalEmissive = child.material.emissive.clone();
-        }
-
-        if (child.isMesh) {
-            // Example condition: prevent highlight on "head"
+            // Prevent highlight on mesh named "Body_of_Ilium"
+            if (child.name === 'Body_of_Ilium') {
+                child.userData.noHighlight = true;
+            }
+            // Example: prevent highlight on "Femur" (existing)
             if (child.name === 'Femur') {
                 child.userData.noHighlight = true;
             }
+        }
+        if (!child.userData.originalEmissive && child.material?.emissive) {
+            child.userData.originalEmissive = child.material.emissive.clone();
         }
     });
 
@@ -377,4 +378,5 @@ function animate() {
     renderer.render(scene, camera);
 }
 animate();
+
 
